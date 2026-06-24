@@ -1,0 +1,8 @@
+# PySOC runtime requirements — none!
+#
+# PySOC intentionally has ZERO runtime dependencies. Only the Python 3.10+
+# standard library is required. This keeps the install footprint tiny and
+# makes PySOC trivially portable to air-gapped environments.
+#
+# Development dependencies (pytest, pytest-cov) are listed in
+# requirements-dev.txt and installed via `pip install -e ".[dev]"`.

@@ -1,0 +1,9 @@
+{
+  "files": [
+    "windows.jsonl",
+    "linux_auth.log",
+    "web_access.log"
+  ],
+  "generated_at": "2026-06-24T00:00:00Z",
+  "note": "Synthetic sample telemetry for local testing."
+}

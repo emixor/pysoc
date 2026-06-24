@@ -1,0 +1,2 @@
+{"timestamp": "2026-06-24T01:00:00Z", "event_type": "login_success", "source": "windows", "host": "workstation-01", "user": "alice", "ip": "198.51.100.10", "message": "Interactive logon success."}
+{"timestamp": "2026-06-24T01:01:00Z", "event_type": "process_creation", "source": "windows", "host": "workstation-01", "user": "alice", "ip": "198.51.100.10", "message": "powershell.exe -EncodedCommand SQBFAFgA"}

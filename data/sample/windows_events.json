@@ -1,0 +1,84 @@
+[
+  {
+    "EventID": 4624,
+    "TimeCreated": "2026-03-07T14:00:00+00:00",
+    "Properties": [
+      {"Key": "TargetUserName", "Value": "alice"},
+      {"Key": "IpAddress", "Value": "::1"},
+      {"Key": "LogonType", "Value": 2}
+    ],
+    "Message": "An account was successfully logged on. EventID=4624"
+  },
+  {
+    "EventID": 4625,
+    "TimeCreated": "2026-03-07T14:10:00+00:00",
+    "Properties": [
+      {"Key": "TargetUserName", "Value": "Administrator"},
+      {"Key": "IpAddress", "Value": "203.0.113.5"},
+      {"Key": "LogonType", "Value": 3}
+    ],
+    "Message": "An account failed to log on. EventID=4625"
+  },
+  {
+    "EventID": 4625,
+    "TimeCreated": "2026-03-07T14:10:04+00:00",
+    "Properties": [
+      {"Key": "TargetUserName", "Value": "Administrator"},
+      {"Key": "IpAddress", "Value": "203.0.113.5"},
+      {"Key": "LogonType", "Value": 3}
+    ],
+    "Message": "An account failed to log on. EventID=4625"
+  },
+  {
+    "EventID": 4625,
+    "TimeCreated": "2026-03-07T14:10:08+00:00",
+    "Properties": [
+      {"Key": "TargetUserName", "Value": "Administrator"},
+      {"Key": "IpAddress", "Value": "203.0.113.5"},
+      {"Key": "LogonType", "Value": 3}
+    ],
+    "Message": "An account failed to log on. EventID=4625"
+  },
+  {
+    "EventID": 4625,
+    "TimeCreated": "2026-03-07T14:10:12+00:00",
+    "Properties": [
+      {"Key": "TargetUserName", "Value": "Administrator"},
+      {"Key": "IpAddress", "Value": "203.0.113.5"},
+      {"Key": "LogonType", "Value": 3}
+    ],
+    "Message": "An account failed to log on. EventID=4625"
+  },
+  {
+    "EventID": 4625,
+    "TimeCreated": "2026-03-07T14:10:16+00:00",
+    "Properties": [
+      {"Key": "TargetUserName", "Value": "Administrator"},
+      {"Key": "IpAddress", "Value": "203.0.113.5"},
+      {"Key": "LogonType", "Value": 3}
+    ],
+    "Message": "An account failed to log on. EventID=4625"
+  },
+  {
+    "EventID": 4688,
+    "TimeCreated": "2026-03-07T14:15:00+00:00",
+    "Properties": [
+      {"Key": "SubjectUserName", "Value": "admin"},
+      {"Key": "NewProcessName", "Value": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"},
+      {"Key": "ParentProcessName", "Value": "C:\\Windows\\System32\\cmd.exe"},
+      {"Key": "CommandLine", "Value": "powershell.exe -EncodedCommand VwByAGkAdABlAC0ASABvAHMAdAAgACcAcAB5AHMAbwBjAC0AdABlAHMAdAA6ACAAaABhAHIAbQBsAGUAcwBzACAAZQBuAGMAbwBkAGUAZAAgAHAAYQBsAGwAbwBhAGQAJwA="}
+    ],
+    "Message": "A new process has been created. EventID=4688"
+  },
+  {
+    "EventID": 4688,
+    "TimeCreated": "2026-03-07T14:16:00+00:00",
+    "Properties": [
+      {"Key": "SubjectUserName", "Value": "admin"},
+      {"Key": "NewProcessName", "Value": "C:\\Temp\\mimikatz.exe"},
+      {"Key": "ParentProcessName", "Value": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"},
+      {"Key": "CommandLine", "Value": "mimikatz.exe sekurlsa::logonpasswords exit"}
+    ],
+    "Message": "A new process has been created. EventID=4688"
+  }
+]

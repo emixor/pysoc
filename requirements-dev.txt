@@ -1,0 +1,7 @@
+# PySOC development requirements.
+#
+# Install with: pip install -r requirements-dev.txt
+# (or: pip install -e ".[dev]" which uses pyproject.toml's dev extra)
+
+pytest>=7.0
+pytest-cov>=4.0
